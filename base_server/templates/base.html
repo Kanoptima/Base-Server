@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+<head>
+    <meta charset="UTF-8">
+    {% block scripts %}{% endblock %}
+    <title>{% block title %} {% endblock %}</title>
+    <style>
+        a { text-decoration: none; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--color-light);
+            color: var(--color-dark);
+            margin: 0;
+            padding: 0;
+        }
+        .main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+        }
+        .hidden {
+            display: none;
+        }
+
+    </style>
+    {% block style %}{% endblock %}
+</head>
+<body>
+    {% include 'nav.html' %}
+    <div class="main">
+        {% block content %} {% endblock %}
+    </div>
+</body>
+</html>

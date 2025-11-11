@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--color-box);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+        }
+        .main {
+            text-align: center;
+            border: 2px solid var(--color-primary);
+            padding: 50px 50px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 50px auto;
+            background-color: var(--color-light);
+            max-width: 600px;
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -30%);
+        }
+        .main h1 {
+            margin-bottom: 20px;
+            font-size: 2em;
+            color: var(--color-dark);
+        }
+        .main p {
+            margin-top: 0;
+            font-size: 1.2em;
+            color: #555;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+{% if show_navbar is not defined or show_navbar %}
+    {% include 'nav.html' %}
+{% endif %}
+<body>
+    {% if play_sound is not defined or play_sound %}
+    <audio id="sound" src="{{ url_for('base_static.static', filename='done.mp3') }}"></audio>
+    {% endif %}
+    <script>
+        window.onload = function() {
+            document.getElementById('sound').play();
+        };
+    </script>
+    <div class="main">
+        {% block content %} {% endblock %}
+    </div>
+</body>
+</html>

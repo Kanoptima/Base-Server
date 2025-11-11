@@ -1,0 +1,84 @@
+<div class="search-container">
+    <input type="text" class="search-input" placeholder="Search..." onkeyup="filterOptions()">
+</div>
+<div class="button-list">
+    {% for web_page in web_pages %}
+        <div class="option-pair">
+            <a href="{{ web_page.url }}" target="_blank" class="option-btn"><b>{{ web_page.name }}</b></a>
+            <div class="option-description">{{ web_page.description }}</div>
+        </div>
+    {% endfor %}
+</div>
+<script>
+    function filterOptions() {
+        const input = document.querySelector('.search-input');
+        const filter = input.value.toLowerCase();
+        const options = document.querySelectorAll('.option-pair');
+
+        options.forEach(option => {
+            const btnText = option.querySelector('.option-btn').textContent.toLowerCase();
+            const descriptionText = option.querySelector('.option-description').textContent.toLowerCase();
+
+            if (btnText.includes(filter) || descriptionText.includes(filter)) {
+                option.classList.remove('hidden');
+            } else {
+                option.classList.add('hidden');
+            }
+        });
+    }
+</script>
+<style>
+    .button-list {
+        width: 70%;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+    }
+    .search-container {
+        width: 20%;
+        margin-bottom: 20px;
+    }
+    .search-input {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid var(--color-primary);
+        border-radius: 5px;
+        font-size: 1em;
+    }
+    .option-pair {
+        display: flex;
+        align-items: center;
+        color: var(--color-primary-dark);
+        margin: 10px 0;
+        width: 70%;
+    }
+    .option-btn {
+        background-color: var(--color-light);
+        color: var(--color-primary-dark);
+        border: 2px solid var(--color-primary);
+        text-decoration: none; /* prevents underline flash */
+        padding: 15px 30px;
+        margin-right: 20px;
+        border-radius: 5px;
+        width: 15%;
+        font-size: 1em;
+        font-variation-settings: bold;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+        flex-shrink: 0;
+    }
+    .option-btn:hover {
+        background-color: var(--color-primary);
+        color: var(--color-light);
+    }
+    .option-description {
+        flex-grow: 1;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 5px;
+    }
+    .hidden {
+        display: none;
+    }
+</style>

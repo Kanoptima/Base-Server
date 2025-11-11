@@ -1,0 +1,113 @@
+{% import 'macros.html' as macros %}
+
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ automation_name }} Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--color-light);
+            color: var(--color-dark);
+            margin: 0;
+            padding: 0;
+        }
+        .main {
+            margin: 50px auto;
+            width: 70%;
+        }
+        .return-success-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            justify-content: space-between;
+        }
+        .return-link {
+            display: inline-block;
+            background-color: var(--color-primary);
+            color: white;
+            border: 2px solid var(--color-primary);
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .return-link:hover {
+            background-color: white;
+            color: var(--color-primary);
+        }
+        .success-box {
+            background-color: var(--color-primary);
+            color: white;
+            border: 2px solid var(--color-primary);
+            padding: 10px 30px;
+            border-radius: 5px;
+            font-size: 3em;
+            text-align: center;
+            position: relative;
+        }
+        .message {
+            position: relative;
+            border: 4px solid;
+            padding: 25px 15px 15px 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: var(--color-dark);
+        }
+        .message::before {
+            content: attr(data-type);
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px 3px;
+            font-weight: bold;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
+        .error {
+            border-color: #ff4d4d;
+        }
+        .warning {
+            border-color: #ffa500;
+        }
+        .info {
+            border-color: #add8e6;
+        }
+        .error::before {
+            background-color: #ff4d4d;
+        }
+        .warning::before {
+            background-color: #ffa500;
+        }
+        .info::before {
+            background-color: #add8e6;
+        }
+    </style>
+</head>
+<body>
+    {% include 'nav.html' %}
+    <div class="main">
+        <div class="title-container">
+            <h1 class="title">{{ automation_name }} Error & Warning Report</h1>
+        </div>
+        <div class="return-success-container">
+            <a href="/" class="return-link">Return</a>
+            {% if successful %}
+                <div class="success-box">TASK SUCCESSFUL</div>
+            {% endif %}
+        </div>
+        {{ macros.render_messages(messages) }}
+    </div>
+    <audio id="sound" src="{{ url_for('base_static.static', filename='done.mp3') }}" preload="auto"></audio>
+    <script>
+        window.onload = function() {
+            document.getElementById('sound').play();
+        };
+    </script>
+</body>
+</html>

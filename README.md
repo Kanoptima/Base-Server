@@ -1,0 +1,1 @@
+Core server functionality for Kanoptima Automation deployments to import from, ensuring commonality and stability of common components

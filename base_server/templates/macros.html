@@ -1,0 +1,7 @@
+{% macro render_messages(messages, timestamp=True) %}
+    {% for message in messages %}
+        <div class="message {{ message.severity.value }}" data-type="{{ message.severity.value.upper() }}">
+            {% if timestamp %}{{ message.date.strftime('[%d/%m/%Y %H:%M:%S]') }}{% endif %} {{ message.message }}
+        </div>
+    {% endfor %}
+{% endmacro %}

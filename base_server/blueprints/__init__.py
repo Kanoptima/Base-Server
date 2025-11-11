@@ -1,0 +1,1 @@
+""" Module providing blueprints (endpoints) for the application """

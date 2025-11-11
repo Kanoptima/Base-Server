@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--color-light);
+            color: var(--color-dark);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: var(--color-box);
+        }
+        .main {
+            text-align: center;
+            background-color: var(--color-light);
+            border: 2px solid var(--color-primary);
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <script>
+        function checkTaskStatus(taskId) {
+            fetch(`/task-status/${taskId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.state === 'SUCCESS') {
+                        // Redirect to success page or display success message
+                        window.location.href = `{{ redirect_url }}`;
+                    } else if (data.state === 'FAILURE') {
+                        // Redirect to error page or display error message
+                        window.location.href = `/uncaught_error`;
+                    } else {
+                        // Keep polling
+                        setTimeout(() => checkTaskStatus(taskId), 1000);
+                    }
+                });
+        }
+
+        // Start polling
+        document.addEventListener('DOMContentLoaded', () => {
+            checkTaskStatus("{{ task_id }}");
+        });
+    </script>
+</head>
+<body>
+    <div class="main">
+        {% block content %} {% endblock %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<div class="search-container">
+    <input type="text" class="search-input" placeholder="Search..." onkeyup="filterOptions()">
+</div>
+<div class="button-grid">
+    {% for option in options %}
+        <a href="{{ option['url'] }}" target="_blank" class="grid-btn">
+            <div class="btn-title">{{ option['title'] }}</div>
+            <div class="btn-subtitle">{{ option['subtitle'] }}</div>
+        </a>
+    {% endfor %}
+</div>
+<script>
+    function filterOptions() {
+        const input = document.querySelector('.search-input');
+        const filter = input.value.toLowerCase();
+        const buttons = document.querySelectorAll('.grid-btn');
+
+        buttons.forEach(button => {
+            const btnText = button.querySelector('.btn-title').textContent.toLowerCase();
+
+            if (btnText.includes(filter)) {
+                button.classList.remove('hidden');
+            } else {
+                button.classList.add('hidden');
+            }
+        });
+    }
+</script>
+<style>
+    .search-container {
+            width: 20%;
+            margin-bottom: 20px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--color-primary);
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .option-pair {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            width: 70%;
+        }
+        .option-btn {
+            background-color: var(--color-light);
+            color: var(--color-primary-dark);
+            border: 2px solid var(--color-primary);
+            padding: 15px 30px;
+            margin-right: 20px;
+            border-radius: 5px;
+            width: 15%;
+            font-size: 1em;
+            font-variation-settings: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            flex-shrink: 0;
+        }
+        .option-btn:hover {
+            background-color: var(--color-primary);
+            color: var(--color-light);
+        }
+        .option-description {
+            flex-grow: 1;
+            /* background-color: var(--color-box); */
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            justify-items: center;
+            margin: 20px auto;
+            max-width: 80%;
+        }
+        .grid-btn {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 200px;
+            height: 200px;
+            background-color: white;
+            color: var(--color-primary-dark);
+            border: 2px solid var(--color-primary);
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .grid-btn:hover {
+            background-color: var(--color-primary);
+            color: white;
+        }
+        .btn-title {
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+        .btn-subtitle {
+            font-size: 0.9em;
+            color: #777;
+            transition: color 0.3s;
+        }
+        .grid-btn:hover .btn-subtitle {
+            color: white;
+        }
+        .hidden {
+            display: none;
+        }
+</style>

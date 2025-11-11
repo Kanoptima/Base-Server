@@ -1,0 +1,209 @@
+<div class="header-container">
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Search..." onkeyup="filterOptions()">
+    </div>
+    <a href="/updates/{{ task_type }}" class="update-button" data-url="/updates/{{ task_type }}">
+        Update ClickUp Tasks<br>
+        <span class="update-date">Last updated: {{ last_updated }}</span>
+    </a>
+</div>
+<div class="clickup-list">
+    {% for task in tasks %}
+        <div class="clickup-option">
+            <a href="{{ task['url'] }}" class="clickup-btn" data-url="{{ task['url'] }}">{{ task['client_id'] }}</a>
+            <div class="clickup-date" data="{{ task['date'] }}">{{ task['date'] }}</div>
+            <a href="https://base_server.clickup.com/t/{{ task['task_id'] }}" target="_blank" class="clickup-redir" data="{{ task['task_id'] }}">{{ task['task_id'] }}</a>
+        </div>
+    {% endfor %}
+    <div id="loading-indicator" class="loading-message">Loading tasks...</div>
+</div>
+
+<script>
+    function filterOptions() {
+        const input = document.querySelector('.search-input');
+        const filter = input.value.toLowerCase();
+        const options = document.querySelectorAll('.clickup-option');
+
+        options.forEach(option => {
+            const buttonText = option.querySelector('.clickup-btn').textContent.toLowerCase();
+            const dateText = option.querySelector('.clickup-date').getAttribute('data').toLowerCase();
+            const nameText = option.querySelector('.clickup-redir').getAttribute('data').toLowerCase();
+
+            if (buttonText.includes(filter) || dateText.includes(filter) || nameText.includes(filter)) {
+                option.classList.remove('hidden');
+            } else {
+                option.classList.add('hidden');
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const taskListContainer = document.querySelector('.clickup-list');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const taskType = "{{ task_type }}";
+
+        const eventSource = new EventSource(`${taskType}/tasks/stream`);
+
+        eventSource.onmessage = function (event) {
+            const task = JSON.parse(event.data);
+
+            if (task.complete) {
+                // All tasks are loaded; hide the loading indicator
+                loadingIndicator.style.display = 'none';
+                eventSource.close();
+                return;
+            }
+
+            // Create the clickup-option element
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'clickup-option';
+
+            // Create the clickup-btn element
+            const buttonLink = document.createElement('a');
+            buttonLink.href = task.url;
+            buttonLink.className = 'clickup-btn';
+            buttonLink.setAttribute('data-url', task.url);
+            buttonLink.textContent = task.client_id;
+
+            // Create the clickup-date element
+            const dateDiv = document.createElement('div');
+            dateDiv.className = 'clickup-date';
+            dateDiv.setAttribute('data', task.date || 'N/A');
+            dateDiv.textContent = task.date || 'N/A';
+
+            // Create the clickup-redir element
+            const redirLink = document.createElement('a');
+            redirLink.href = `https://base_server.clickup.com/t/${task.task_id}`;
+            redirLink.target = '_blank'; // this one can stay as a normal tab
+            redirLink.className = 'clickup-redir';
+            redirLink.setAttribute('data', task.task_id);
+            redirLink.textContent = task.task_id;
+
+            // Append children to the clickup-option
+            optionDiv.appendChild(buttonLink);
+            optionDiv.appendChild(dateDiv);
+            optionDiv.appendChild(redirLink);
+
+            // Append the clickup-option to the list
+            taskListContainer.insertBefore(optionDiv, loadingIndicator);
+
+            // Attach popup handler to the new button
+            attachPopupHandler(buttonLink);
+        };
+
+        // Attach popup open behavior for buttons
+        function attachPopupHandler(element) {
+            element.addEventListener('click', function (e) {
+                e.preventDefault();
+                const url = element.getAttribute('data-url') || element.href;
+                window.open(
+                    url,
+                    "_blank",
+                    "width=1200,height=800,resizable=yes,scrollbars=yes"
+                );
+            });
+        }
+
+        // Attach to static buttons
+        document.querySelectorAll('.clickup-btn, .update-button').forEach(attachPopupHandler);
+    });
+</script>
+
+<style>
+    .header-container {
+        display: flex;
+        justify-content: center; /* Centers the group as a whole */
+        align-items: center;
+        gap: 60px; /* Space between search bar and button */
+        margin-bottom: 20px;
+    }
+    .search-container {
+        width: 300px; /* Set a fixed width for the search bar */
+    }
+    .search-input {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid var(--color-primary);
+        border-radius: 5px;
+        font-size: 1em;
+    }
+    .update-button {
+        display: inline-block;
+        background-color: white;
+        color: var(--color-primary-dark);
+        border: 2px solid var(--color-primary);
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 1em;
+        text-align: center;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .update-button:hover {
+        background-color: var(--color-primary);
+        color: white;
+    }
+    .update-date {
+        font-size: 0.9em;
+        color: grey;
+        display: block;
+        margin-top: 5px;
+        transition: color 0.3s;
+    }
+    .update-button:hover .update-date {
+        color: white;
+    }
+    .clickup-list {
+        width: 100%;
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+    }
+    .clickup-option {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        width: 40%;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        background-color: #f9f9f9;
+        vertical-align: middle;
+    }
+    .clickup-btn {
+        background-color: white;
+        color: var(--color-primary-dark);
+        border: 2px solid var(--color-primary);
+        padding: 15px 30px;
+        margin-right: 20px;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+        flex-shrink: 0;
+        width: 30%;
+        text-align: center;
+    }
+    .clickup-btn:hover {
+        background-color: var(--color-primary);
+        color: white;
+    }
+    .clickup-date, .clickup-redir {
+        padding: 5px 10px;
+        margin-right: 10px;
+        border-radius: 5px;
+        background-color: var(--color-light);
+        border: 1px solid #ddd;
+        text-align: center;
+        width: 40%;
+    }
+    .loading-message {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 1.2em;
+        color: grey;
+    }
+    .hidden {
+        display: none;
+    }
+</style>
