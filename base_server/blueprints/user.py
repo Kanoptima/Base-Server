@@ -7,7 +7,7 @@ import requests
 from base_server.models.user import User
 from base_server.extensions import db
 
-bp = Blueprint('user', __name__)
+bp = Blueprint('user', __name__, url_prefix='/user')
 
 def load_client_config():
     """ Since this is used more than once, here is a shorthand for Google Oauth client config. """
