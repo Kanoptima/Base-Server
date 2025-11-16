@@ -112,9 +112,10 @@ def celery_init_app(app: Flask, schedule: dict[str, dict]) -> Celery:
     celery_app = MyCelery(app.name, task_cls=FlaskTask)
     celery_app.config_from_object(app.config["CELERY"])
 
-    package = __import__('app.tasks', fromlist=[""])
-    task_modules = [f'app.tasks.{name}' for _, name, _ in pkgutil.iter_modules(package.__path__)]
-    celery_app.autodiscover_tasks(task_modules, force=True)
+    celery_app.autodiscover_tasks([
+        "app.tasks",
+        "base_server.tasks",
+    ])
     celery_app.conf.update(
         task_serializer='custom-json',
         accept_content=['custom-json'],
