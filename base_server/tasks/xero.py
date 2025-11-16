@@ -882,10 +882,10 @@ def get_tracking_categories(xero_client_id: int):
     """Get list of all tracking categories
 
     Args:
-        xero_client_id (str): XeroClient ID to get tracking categories for
+        xero_client_id (int): XeroClient ID to get tracking categories for
 
     Returns:
-        list: I think
+        dict: Tracking categories
     """
 
     client = XeroClient.get_by_id(xero_client_id)
@@ -1173,7 +1173,7 @@ def get_tokens(client: XeroClient):
     return client.tenant_id, client.get_access_token()
 
 
-def register_new_client(xero_client_id, auth_code, redirect_uri, names: list[str]):
+def register_new_client(xero_client_id, auth_code, redirect_uri, names: list):
     """ Takes the response from the Xero API authentication workflow and saves it to the relevant BAS client in the database.
         Returns `bool` representing success of function. """
     messages: list[AutomationMessage] = []

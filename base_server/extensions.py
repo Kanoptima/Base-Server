@@ -69,6 +69,28 @@ class MyCelery(Celery):
             module = module[i+6:]
         return super().gen_task_name(name, module)
 
+def cron_to_crontab(expr: str) -> crontab:
+    """
+    Convert a standard 5-field cron string into a Celery crontab() object.
+
+    Example:
+        "0 1 * * *"  -> runs at 1am every day
+    """
+    parts = expr.split()
+    if len(parts) != 5:
+        raise ValueError(f"Invalid cron string '{expr}': must have 5 fields")
+
+    minute, hour, day_of_month, month_of_year, day_of_week = parts
+
+    return crontab(
+        minute=minute,
+        hour=hour,
+        day_of_month=day_of_month,
+        month_of_year=month_of_year,
+        day_of_week=day_of_week,
+    )
+
+
 def celery_init_app(app: Flask, schedule: dict[str, dict]) -> Celery:
     """ Creates `Celery` app and binds it to provided `Flask` app """
 
@@ -101,7 +123,7 @@ def celery_init_app(app: Flask, schedule: dict[str, dict]) -> Celery:
         enable_utc=True,
     )
     for entry in schedule.values():
-        entry['schedule'] = crontab.from_string(entry['schedule'])
+        entry['schedule'] = cron_to_crontab(entry['schedule'])
     celery_app.conf.beat_schedule = schedule
     celery_app.set_default()
     app.extensions['celery'] = celery_app
