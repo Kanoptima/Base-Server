@@ -254,7 +254,7 @@ def execute_payable_invoice(xero_url: str, dates: Dates):
     return results.get('task_id')
 
 
-def get_payable_invoice(task_id: str, timeout=480):
+def get_payable_invoice(task_id: str, timeout=1200):
     """Gets results of payable invoice task with id `task_id`. Returns raw bytes of excel file. Logs and returns `None` on error.
     """
     params = {

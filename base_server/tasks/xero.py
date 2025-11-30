@@ -460,7 +460,9 @@ def get_contacts(xero_client_id: int, where_fliter: str):
         'Accept': 'application/json'
     }
     params = {
-        'where': where_fliter
+        'where': where_fliter,
+        'page': 1,
+        'pageSize': 250
     }
 
     response: dict = main_client.get(endpoint, headers, params=params)
