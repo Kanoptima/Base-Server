@@ -108,7 +108,7 @@ def get_gmail_service(from_email: str):
 def _attach_images(message: MIMEMultipart, inline_images: dict):
     """Attaches inline images to the email."""
     for cid, image_path in inline_images.items():
-        with open(os.path.join('base_server', 'static', image_path), 'rb') as file:
+        with open(os.path.join('app', 'static', image_path), 'rb') as file:
             image_bytes = file.read()
         image_part = MIMEImage(image_bytes)
         image_part.add_header('Content-ID', f'<{cid}>')
