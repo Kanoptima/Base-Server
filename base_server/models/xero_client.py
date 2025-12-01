@@ -51,16 +51,16 @@ class XeroClient(db.Model):
         return client
 
     @classmethod
-    def create_client(cls, new_id: Optional[int]):
+    def create_client(cls, new_id: Optional[int], url: Optional[str]):
         """Creates and saves a new XeroClient in the database.
 
         Args:
-            new_id (Optional[int]): Iden
+            new_id (Optional[int]): Identifier for xero client
 
         Returns:
             Optional[XeroClient]: The newly created client if successful, None otherwise.
         """
-        client = cls(id=new_id) # type: ignore
+        client = cls(id=new_id, url=url) # type: ignore
         try:
             db.session.add(client)
             db.session.commit()
