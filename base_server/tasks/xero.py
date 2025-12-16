@@ -731,6 +731,10 @@ def get_aged_payables(xero_client_id: int, date: datetime, month_groups: int, ag
         # Don't use contacts that aren't in the CPI contact group if it was found
         if contact_filter and contact.get('ContactID') not in contact_filter:
             continue
+
+        # Don't use if in "Exclude CPI" contact group
+        if "Exclude CPI" in [group.get('Name') for group in contact.get('ContactGroups', [])]:
+            continue
         params = {
             'contactID': contact.get('ContactID'),
             'toDate': date.strftime('%Y-%m-%d')
@@ -1000,7 +1004,7 @@ def post_manual_journal(xero_client_id: int, narration: str, journal_lines: list
         'Accept': 'application/json'
     }
     data = {
-        'Status': 'POSTED',
+        'Status': 'DRAFT',
         'Narration': narration,
         'JournalLines': journal_lines
     }
