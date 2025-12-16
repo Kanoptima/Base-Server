@@ -1004,7 +1004,7 @@ def post_manual_journal(xero_client_id: int, narration: str, journal_lines: list
         'Accept': 'application/json'
     }
     data = {
-        'Status': 'DRAFT',
+        'Status': 'POSTED',
         'Narration': narration,
         'JournalLines': journal_lines
     }
